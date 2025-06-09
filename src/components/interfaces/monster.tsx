@@ -18,3 +18,13 @@ export interface battleResult {
   loser: monster;
   rounds: battleRound[];
 }
+export interface monsterItem {
+  battleLog: battleResult | null;
+  currentRound: number;
+}
+export interface cardMonster extends monsterItem {
+  isOpponent: boolean;
+  monster: monster;
+
+  battlePhase: string;
+}

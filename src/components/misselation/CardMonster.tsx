@@ -13,15 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { FaTrophy } from "react-icons/fa";
 
-import type { monster, battleResult } from "../interfaces/monster";
-
-interface cardMonster {
-  isOpponent: boolean;
-  monster: monster;
-  battleLog: battleResult | null;
-  currentRound: number;
-  battlePhase: string;
-}
+import type { cardMonster } from "../interfaces/monster";
 
 const CardMonster: React.FC<cardMonster> = ({
   monster,
