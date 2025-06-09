@@ -22,7 +22,8 @@ import {
   FormLabel,
   Image,
 } from "@chakra-ui/react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import type { SubmitHandler } from "react-hook-form";
 import type { monster } from "../interfaces/monster";
 import InputField from "../form/InputField";
 import { saveMonsterToLocalStorage } from "../logic/handleSave";

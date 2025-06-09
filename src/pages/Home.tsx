@@ -24,7 +24,7 @@ import type {
 } from "../components/interfaces/monster";
 import { simulateBattle } from "../components/logic/simulateBattle";
 import CardMonster from "../components/misselation/CardMonster";
-import RenderBattleLog from "../components/misselation/renderBattleLog";
+import RenderBattleLog from "../components/misselation/RenderBattleLog";
 import { getMonstersFromLocalStorage } from "../components/logic/handleSave";
 
 export default function BattleSimulator() {
