@@ -47,15 +47,15 @@ Ao final, o vencedor será destacado com suas estatísticas completas.
 
 # Clone o repositório
 
-# Acesse o diretório do projeto
+1- Acesse o diretório do projeto
 
-# Instale as dependências
+2 -Instale as dependências
 
-npm install
+comando: npm install
 
-# Execute o projeto
+3- Execute o projeto
 
-npm run dev
+comando: npm run dev
 
 ### 📝 Notas Importantes
 
