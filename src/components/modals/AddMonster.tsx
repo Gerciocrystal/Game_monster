@@ -8,7 +8,6 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalOverlay,
-  Stack,
   Text,
   useToast,
   Progress,
@@ -26,6 +25,7 @@ import {
 import { useForm, SubmitHandler } from "react-hook-form";
 import type { monster } from "../interfaces/monster";
 import InputField from "../form/InputField";
+import { saveMonsterToLocalStorage } from "../logic/handleSave";
 
 const MAX_TOTAL_POINTS = 300; // Pontos totais que podem ser distribuídos
 const INITIAL_VALUES = {
@@ -90,7 +90,7 @@ const AddMonster: React.FC<modal> = ({ isOpen, onClose }) => {
 
   const saveMonster: SubmitHandler<monster> = (data: monster) => {
     try {
-      console.log(data);
+      saveMonsterToLocalStorage(data);
       toast({
         title: "Monstro criado!",
         description: `${data.name} foi registrado com sucesso.`,
@@ -101,10 +101,12 @@ const AddMonster: React.FC<modal> = ({ isOpen, onClose }) => {
       reset();
       setPreviewImage("");
       onClose();
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Erro no servidor";
       toast({
         title: "Erro",
-        description: error?.message,
+        description: errorMessage,
         status: "error",
         duration: 3000,
         isClosable: true,

@@ -23,9 +23,9 @@ const CardMonster: React.FC<cardMonster> = ({
   battlePhase,
 }) => {
   const currentHp = battleLog?.rounds[currentRound]
-    ? monster.name === battleLog.rounds[currentRound].defender
+    ? monster?.name === battleLog.rounds[currentRound].defender
       ? battleLog.rounds[currentRound].remainingHP
-      : monster.name === battleLog.rounds[currentRound].attacker
+      : monster?.name === battleLog.rounds[currentRound].attacker
       ? monster.hp
       : monster.hp
     : monster.hp;

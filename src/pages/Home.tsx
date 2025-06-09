@@ -9,6 +9,8 @@ import {
   Stack,
   Icon,
   useToast,
+  Select,
+  Grid,
 } from "@chakra-ui/react";
 import { FaTrophy } from "react-icons/fa";
 import { LuSwords } from "react-icons/lu";
@@ -22,41 +24,55 @@ import type {
 } from "../components/interfaces/monster";
 import { simulateBattle } from "../components/logic/simulateBattle";
 import CardMonster from "../components/misselation/CardMonster";
+import RenderBattleLog from "../components/misselation/renderBattleLog";
+import { getMonstersFromLocalStorage } from "../components/logic/handleSave";
 
 export default function BattleSimulator() {
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const [battlePhase, setBattlePhase] = useState<"start" | "battle" | "end">(
-    "start"
-  );
+  const [battlePhase, setBattlePhase] = useState<
+    "selection" | "start" | "battle" | "end"
+  >("selection");
   const [currentRound, setCurrentRound] = useState(0);
   const [battleLog, setBattleLog] = useState<battleResult | null>(null);
+  const [selectedMonsters, setSelectedMonsters] = useState<{
+    monster1: monster | null;
+    monster2: monster | null;
+  }>({ monster1: null, monster2: null });
   const toast = useToast();
 
-  const monsterA: monster = {
-    name: "Dragão",
-    attack: 80,
-    defense: 60,
-    speed: 70,
-    hp: 150,
-    image_url: "https://i.imgur.com/JR6oD3a.png",
-  };
+  const monsters = getMonstersFromLocalStorage();
 
-  const monsterB: monster = {
-    name: "Goblin",
-    attack: 50,
-    defense: 30,
-    speed: 65,
-    hp: 100,
-    image_url: "https://i.imgur.com/3ZQ2W9y.png",
+  const handleMonsterSelect = (monsterId: string, position: 1 | 2) => {
+    const selected = monsters.find((m) => m.name === monsterId);
+    if (selected) {
+      setSelectedMonsters((prev) => ({
+        ...prev,
+        [`monster${position}`]: selected,
+      }));
+    }
   };
 
   const startBattle = () => {
+    if (!selectedMonsters.monster1 || !selectedMonsters.monster2) {
+      toast({
+        title: "Selecione dois monstros",
+        description:
+          "Você precisa selecionar dois monstros para começar a batalha",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     setBattlePhase("start");
     setCurrentRound(0);
-    const result = simulateBattle(monsterA, monsterB);
+    const result = simulateBattle(
+      selectedMonsters.monster1,
+      selectedMonsters.monster2
+    );
     setBattleLog(result);
 
-    // Simula a progressão da batalha
     setTimeout(() => {
       setBattlePhase("battle");
       if (result.rounds.length > 0) {
@@ -84,34 +100,10 @@ export default function BattleSimulator() {
     setTimeout(() => animateBattle(rounds, index + 1), 1500);
   };
 
-  const renderBattleLog = () => {
-    if (!battleLog || currentRound >= battleLog.rounds.length) return null;
-
-    const round = battleLog.rounds[currentRound];
-    return (
-      <Box
-        bg="gray.50"
-        p={4}
-        borderRadius="md"
-        textAlign="center"
-        border="1px solid"
-        borderColor="gray.200"
-        my={4}
-      >
-        <Flex align="center" justify="center" gap={2}>
-          <Icon as={LuSwords} color="red.500" />
-          <Text fontWeight="bold">Round {currentRound + 1}</Text>
-        </Flex>
-        <Text>
-          <strong>{round.attacker}</strong> atacou{" "}
-          <strong>{round.defender}</strong> causando{" "}
-          <strong color="red.500">{round.damage}</strong> de dano!
-        </Text>
-        <Text>
-          {round.defender} agora tem {round.remainingHP} de HP restante.
-        </Text>
-      </Box>
-    );
+  const resetSelection = () => {
+    setSelectedMonsters({ monster1: null, monster2: null });
+    setBattlePhase("selection");
+    setBattleLog(null);
   };
 
   return (
@@ -121,62 +113,136 @@ export default function BattleSimulator() {
       backgroundPosition="center"
       backgroundRepeat="no-repeat"
       backgroundSize="cover"
-      height="100dvh"
+      minHeight="100dvh"
     >
       <Heading mb={6} textAlign="center" color="purple.600">
         Simulador de Batalha de Monstros
       </Heading>
 
-      <Flex justify="center" gap={6} mb={8}>
-        <Button
-          colorScheme="blue"
-          onClick={startBattle}
-          leftIcon={<LuSwords />}
-          size="lg"
-        >
-          Iniciar Batalha
-        </Button>
-        <Button colorScheme="purple" onClick={onOpen} size="lg">
-          Criar Novo Monstro
-        </Button>
-      </Flex>
-
-      {battlePhase === "start" && (
-        <Box textAlign="center" my={12}>
-          <Heading size="lg" mb={4}>
-            A batalha vai começar!
+      {battlePhase === "selection" && (
+        <Box maxW="800px" mx="auto" bg="whiteAlpha.800" p={6} borderRadius="lg">
+          <Heading size="md" mb={6} textAlign="center">
+            Selecione os monstros para a batalha
           </Heading>
-          <Text fontSize="xl">
-            {monsterA.name} vs {monsterB.name}
-          </Text>
-          <Flex justify="center" gap={8} mt={8}>
-            <CardMonster
-              monster={monsterA}
-              isOpponent={false}
-              battleLog={battleLog}
-              battlePhase={battlePhase}
-              currentRound={currentRound}
-            />
 
-            <Box alignSelf="center">
-              <Icon as={LuSwords} boxSize={8} color="red.500" />
+          <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6} mb={8}>
+            <Box>
+              <Text fontWeight="bold" mb={2}>
+                Monstro 1
+              </Text>
+              <Select
+                placeholder="Selecione um monstro"
+                onChange={(e) => handleMonsterSelect(e.target.value, 1)}
+              >
+                {monsters.map((monster) => (
+                  <option key={monster.name} value={monster.name}>
+                    {monster.name}
+                  </option>
+                ))}
+              </Select>
+              {selectedMonsters.monster1 && (
+                <Box mt={4}>
+                  <CardMonster
+                    currentRound={currentRound}
+                    battleLog={battleLog}
+                    battlePhase={battlePhase}
+                    monster={selectedMonsters.monster1}
+                    isOpponent={false}
+                  />
+                </Box>
+              )}
             </Box>
-            <CardMonster
-              monster={monsterB}
-              isOpponent={true}
-              battleLog={battleLog}
-              battlePhase={battlePhase}
-              currentRound={currentRound}
-            />
+
+            <Box>
+              <Text fontWeight="bold" mb={2}>
+                Monstro 2
+              </Text>
+              <Select
+                placeholder="Selecione um monstro"
+                onChange={(e) => handleMonsterSelect(e.target.value, 2)}
+              >
+                {monsters.map((monster) => (
+                  <option
+                    key={monster.name}
+                    value={monster.name}
+                    disabled={monster.name === selectedMonsters.monster1?.name}
+                  >
+                    {monster.name}
+                  </option>
+                ))}
+              </Select>
+              {selectedMonsters.monster2 && (
+                <Box mt={4}>
+                  <CardMonster
+                    currentRound={currentRound}
+                    battleLog={battleLog}
+                    battlePhase={battlePhase}
+                    monster={selectedMonsters.monster2}
+                    isOpponent={true}
+                  />
+                </Box>
+              )}
+            </Box>
+          </Grid>
+
+          <Flex justify="center" gap={6}>
+            <Button
+              colorScheme="blue"
+              onClick={startBattle}
+              leftIcon={<LuSwords />}
+              size="lg"
+              isDisabled={
+                !selectedMonsters.monster1 || !selectedMonsters.monster2
+              }
+            >
+              Iniciar Batalha
+            </Button>
+            <Button colorScheme="purple" onClick={onOpen} size="lg">
+              Criar Novo Monstro
+            </Button>
           </Flex>
         </Box>
       )}
+
+      {battlePhase === "start" &&
+        selectedMonsters.monster1 &&
+        selectedMonsters.monster2 && (
+          <Box textAlign="center" my={12}>
+            <Heading size="lg" mb={4}>
+              A batalha vai começar!
+            </Heading>
+            <Text fontSize="xl">
+              {selectedMonsters.monster1.name} vs{" "}
+              {selectedMonsters.monster2.name}
+            </Text>
+            <Flex justify="center" gap={8} mt={8}>
+              <CardMonster
+                monster={selectedMonsters.monster1}
+                isOpponent={false}
+                battleLog={battleLog}
+                battlePhase={battlePhase}
+                currentRound={currentRound}
+              />
+
+              <Box alignSelf="center">
+                <Icon as={LuSwords} boxSize={8} color="red.500" />
+              </Box>
+              <CardMonster
+                monster={selectedMonsters.monster2}
+                isOpponent={true}
+                battleLog={battleLog}
+                battlePhase={battlePhase}
+                currentRound={currentRound}
+              />
+            </Flex>
+          </Box>
+        )}
 
       {battlePhase === "battle" && battleLog && (
         <Box>
           <Flex justify="center" gap={8} mb={6}>
             <CardMonster
-              monster={monsterA}
+              monster={battleLog.winner}
               isOpponent={false}
               battleLog={battleLog}
               battlePhase={battlePhase}
@@ -184,14 +250,14 @@ export default function BattleSimulator() {
             />
 
             <CardMonster
-              monster={monsterB}
+              monster={battleLog.loser}
               isOpponent={true}
               battleLog={battleLog}
               battlePhase={battlePhase}
               currentRound={currentRound}
             />
           </Flex>
-          {renderBattleLog()}
+          <RenderBattleLog battleLog={battleLog} currentRound={currentRound} />
         </Box>
       )}
 
@@ -245,6 +311,10 @@ export default function BattleSimulator() {
                 {battleLog.rounds[battleLog.rounds.length - 1].damage} de dano.
               </Text>
             </Stack>
+
+            <Button mt={6} colorScheme="blue" onClick={resetSelection}>
+              Nova Batalha
+            </Button>
           </Box>
         </Box>
       )}
