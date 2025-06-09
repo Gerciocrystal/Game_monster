@@ -10,23 +10,28 @@ export function simulateBattle(
   let attacker: monster;
   let defender: monster;
 
-  const m1 = { ...monster1 };
-  const m2 = { ...monster2 };
+  const tempmonster1 = { ...monster1 };
+  const tempmonster2 = { ...monster2 };
 
-  if (m1.speed > m2.speed) {
-    attacker = m1;
-    defender = m2;
-  } else if (m2.speed > m1.speed) {
-    attacker = m2;
-    defender = m1;
+  // a) O monstro com a maior velocidade faz o primeiro ataque; se ambas as velocidades
+  // forem iguais, o monstro com o maior ataque vai primeiro.
+  if (tempmonster1.speed > tempmonster2.speed) {
+    attacker = tempmonster1;
+    defender = tempmonster2;
+  } else if (tempmonster2.speed > tempmonster1.speed) {
+    attacker = tempmonster2;
+    defender = tempmonster1;
   } else {
-    attacker = m1.attack > m2.attack ? m1 : m2;
-    defender = attacker === m1 ? m2 : m1;
+    attacker =
+      tempmonster1.attack > tempmonster2.attack ? tempmonster1 : tempmonster2;
+    defender = attacker === tempmonster1 ? tempmonster2 : tempmonster1;
   }
-
-  while (m1.hp > 0 && m2.hp > 0) {
+  // sistema de rounds
+  while (tempmonster1.hp > 0 && tempmonster2.hp > 0) {
+    // B)Para calcular o dano (damage), subtraia a defesa do ataque (atack - defense); a
+    // diferença é o dano; se o ataque for igual ou menor que a defesa, o dano é 1.
     let damage = attacker.attack - defender.defense;
-    damage = damage <= 0 ? 1 : damage;
+    damage = damage <= 0 ? 1 : damage; //se o damo for menor ou igual a 0 tire 1 caso não some o dano
 
     defender.hp -= damage;
     if (defender.hp < 0) defender.hp = 0;
@@ -37,14 +42,14 @@ export function simulateBattle(
       damage,
       remainingHP: defender.hp,
     });
-
+    //inversão de papaies, o atacante vira defensor e o defensor vira atacante a cada round
     if (defender.hp <= 0) break;
     [attacker, defender] = [defender, attacker];
   }
-  //Vencedor é aquele que termina a luta com mais HP
+  //Vencedor é aquele que termina a luta com HP maior que 0
   return {
-    winner: m1.hp > 0 ? m1 : m2,
-    loser: m1.hp > 0 ? m2 : m1,
+    winner: tempmonster1.hp > 0 ? tempmonster1 : tempmonster2,
+    loser: tempmonster1.hp > 0 ? tempmonster2 : tempmonster1,
     rounds,
   };
 }

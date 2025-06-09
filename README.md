@@ -1,54 +1,66 @@
-# React + TypeScript + Vite
+### 🧬 Monster Battle Simulator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Um projeto educacional interativo onde você pode criar monstros, simular batalhas e acompanhar os resultados em tempo real — tudo direto no seu navegador!
 
-Currently, two official plugins are available:
+### 🚀 Como Usar
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. Crie seus monstros
+   Clique em "Criar Novo Monstro".
 
-## Expanding the ESLint configuration
+Preencha todos os atributos (nome, ataque, defesa, etc.).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+O monstro será salvo automaticamente no localStorage do seu navegador.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+2. Prepare a batalha
+   Na tela inicial, selecione dois monstros diferentes nos menus dropdown.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Clique em "Iniciar Batalha".
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+3. Assista à ação
+   A batalha será exibida round por round.
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+Ao final, o vencedor será destacado com suas estatísticas completas.
+
+### ✨ Tecnologias Utilizadas
+
+⚛️ React + TypeScript – Estrutura principal da aplicação
+
+💅 Chakra UI – Componentes visuais e estilização
+
+🎨 React Icons – Ícones prontos e customizáveis
+
+📝 React Hook Form – Validação de formulários
+
+💾 LocalStorage – Persistência de dados sem necessidade de back-end
+
+### 🔥 Funcionalidades Principais
+
+✅ Criação e armazenamento de monstros
+
+✅ Sistema de batalha com rounds animados
+
+✅ Visualização detalhada de atributos
+
+✅ Interface responsiva e acessível
+
+✅ Persistência dos dados mesmo após o refresh da página
+
+# Clone o repositório
+
+# Acesse o diretório do projeto
+
+# Instale as dependências
+
+npm install
+
+# Execute o projeto
+
+npm run dev
+
+### 📝 Notas Importantes
+
+⚠️ É necessário criar pelo menos dois monstros antes de iniciar uma batalha.
+
+💡 Os dados são armazenados apenas localmente no seu navegador (via localStorage).
+
+🎓 Este projeto foi desenvolvido com fins avaliativos.

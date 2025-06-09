@@ -1,0 +1,16 @@
+node_modules/
+public/
+src/
+├── assets/            # Arquivos estáticos (imagens)
+├── components/
+│   ├── form/          # Componentes de formulário
+│   ├── interfaces/    # Tipos TypeScript
+│   ├── logic/         # Lógica do simulador
+│   ├── misselation/   # Componentes diversos
+│   └── modals/        # Modais do sistema
+├── pages/             # Páginas da aplicação
+├── App.css
+├── App.tsx
+├── index.css
+├── main.tsx
+└── vite-env.d.ts
